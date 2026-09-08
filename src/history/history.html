@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modern YouTube — Watch History (30 days)</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="history.css">
+</head>
+<body>
+  <header class="topbar">
+    <a href="../options/options.html" class="back"><i class="fa-solid fa-arrow-left"></i> Settings</a>
+    <div class="title"><i class="fa-solid fa-clock-rotate-left"></i> Watch History — last 30 days</div>
+    <div class="actions">
+      <input type="text" id="search" placeholder="Search title or channel...">
+      <button id="clear" class="btn-ghost"><i class="fa-solid fa-trash"></i> Clear all</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div id="currentlyWatching" class="currently-card" style="display:none"></div>
+    <div id="empty" class="empty" style="display:none">No history yet — start watching on YouTube.</div>
+  </main>
+
+  <div id="toast" class="toast"></div>
+  <div id="videoModal" class="modal" aria-hidden="true">
+    <div class="modal-backdrop"></div>
+    <div class="modal-card" role="dialog" aria-modal="true">
+      <button class="modal-close" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+      <img id="modalThumb" class="modal-thumb" alt="">
+      <div class="modal-body">
+        <h2 id="modalTitle" class="modal-title"></h2>
+        <a id="modalChannel" class="modal-channel" target="_blank" rel="noopener"></a>
+        <div id="modalMeta" class="modal-meta"></div>
+        <div class="modal-actions">
+          <a id="modalWatch" class="btn-primary" target="_blank" rel="noopener"><i class="fa-solid fa-play"></i> Watch</a>
+          <a id="modalContinue" class="btn-ghost" target="_blank" rel="noopener" style="display:none">Continue watching</a>
+        </div>
+      </div>
+    </div>
+  </div>
+<script src="history.js"></script>
+</body>
+</html>

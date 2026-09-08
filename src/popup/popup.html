@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modern YouTube</title>
+<link rel="icon" type="image/png" href="../../assets/img/icon.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <div class="header-glow"></div>
+    <div class="header-content">
+      <div class="logo">
+        <div class="logo-icon"><img src="../../assets/img/icon.png" alt="Modern YouTube logo"></div>
+        <div>
+          <h1>Modern YouTube</h1>
+          <p class="subtitle">Enhance • Block • Customize</p>
+        </div>
+      </div>
+      <div class="version">v1.0.0</div>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <div class="tab-indicator"></div>
+    <button class="tab active" data-tab="stats"><i class="fa-solid fa-chart-simple"></i> Stats</button>
+    <button class="tab" data-tab="settings"><i class="fa-solid fa-sliders"></i> Settings</button>
+    <button class="tab" data-tab="appearance"><i class="fa-solid fa-palette"></i> Appearance</button>
+  </nav>
+
+  <div class="views">
+    <!-- STATS -->
+    <div id="view-stats" class="view active">
+      <section class="card stats-card">
+        <div class="stats-grid">
+          <div class="stat"><span class="stat-value" id="statAds">0</span><span class="stat-label">Ads blocked</span></div>
+          <div class="stat"><span class="stat-value" id="statSponsors">0</span><span class="stat-label">Segments skipped</span></div>
+          <div class="stat"><span class="stat-value" id="statTime">0s</span><span class="stat-label">Time saved</span></div>
+        </div>
+        <div class="stats-detail">
+          <div class="detail-row"><span>Pre-roll blocked</span><strong id="statAdsDetail">0</strong></div>
+          <div class="detail-row"><span>SponsorBlock skips</span><strong id="statSponsorsDetail">0</strong></div>
+          <div class="detail-row"><span>Total saved</span><strong id="statTimeDetail">0s</strong></div>
+        </div>
+        <button id="resetStats" class="btn-primary">Reset statistics</button>
+      </section>
+      <section class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><h3 style="font-size:11px;text-transform:uppercase;color:#8a8a8a;letter-spacing:0.4px"><i class="fa-solid fa-clock"></i> Watch Time</h3></div>
+        <div class="stats-detail" style="border:none;padding:0;margin:0">
+          <div class="detail-row"><span>Today</span><strong id="watchTodayP">0m</strong></div>
+          <div class="detail-row"><span>Week</span><strong id="watchWeekP">0m</strong></div>
+          <div class="detail-row"><span>Month</span><strong id="watchMonthP">0m</strong></div>
+        </div>
+        <div style="margin-top:8px"><a href="#" id="openHistory" style="font-size:11px;color:#f1f1f1">View history →</a></div>
+      </section>
+      <section class="card info">
+        <p>Ads are stripped from the player response before playback. Sponsors use <code>sponsor.ajay.app</code>. Your background and clutter settings apply instantly across YouTube.</p>
+      </section>
+    </div>
+
+    <!-- SETTINGS -->
+    <div id="view-settings" class="view">
+      <section class="card">
+        <label class="row">
+          <div><span class="label">Block ads before playback</span><span class="desc">Strips adPlacements + blocks ad domains</span></div>
+          <input type="checkbox" id="autoSkipAd">
+        </label>
+        <label class="row">
+          <div><span class="label">Hide Shorts shelf</span><span class="desc">Removes Shorts carousel & sidebar entry</span></div>
+          <input type="checkbox" id="hideShorts">
+        </label>
+        <label class="row">
+          <div><span class="label">Hide Playables</span><span class="desc">Removes YouTube Playables row</span></div>
+          <input type="checkbox" id="hidePlayables">
+        </label>
+        <label class="row">
+          <div><span class="label">Modern volume overlay</span><span class="desc">Replaces bezel on Arrow Up/Down</span></div>
+          <input type="checkbox" id="customVolumeUI">
+        </label>
+        <label class="row">
+          <div><span class="label">Show skip toast</span><span class="desc">Popup when a segment is skipped</span></div>
+          <input type="checkbox" id="skipNotice">
+        </label>
+      </section>
+      <section class="card">
+        <label class="row">
+          <div><span class="label">SponsorBlock enabled</span><span class="desc">Community data from sponsor.ajay.app</span></div>
+          <input type="checkbox" id="sponsorBlockEnabled">
+        </label>
+        <div id="categories">
+          <label class="row sub"><span>Sponsor</span><input type="checkbox" data-cat="sponsor"></label>
+          <label class="row sub"><span>Intro</span><input type="checkbox" data-cat="intro"></label>
+          <label class="row sub"><span>Outro</span><input type="checkbox" data-cat="outro"></label>
+          <label class="row sub"><span>Interaction</span><input type="checkbox" data-cat="interaction"></label>
+          <label class="row sub"><span>Self-promo</span><input type="checkbox" data-cat="selfpromo"></label>
+          <label class="row sub"><span>Music (off-topic)</span><input type="checkbox" data-cat="music_offtopic"></label>
+        </div>
+      </section>
+    </div>
+
+    <!-- APPEARANCE -->
+    <div id="view-appearance" class="view">
+      <section class="card">
+        <label class="row">
+          <div><span class="label">Custom background</span><span class="desc">Image covers entire YouTube</span></div>
+          <input type="checkbox" id="customBackgroundEnabled">
+        </label>
+        <div id="bgControls" class="bg-controls">
+          <div class="bg-preview" id="bgPreview"><span>No image</span></div>
+          <div class="bg-actions">
+            <label class="btn-secondary file-btn">Upload image<input type="file" id="bgFile" accept="image/*" hidden></label>
+            <button class="btn-ghost" id="bgClear">Remove</button>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Image URL</label>
+            <div class="input-row">
+              <input type="text" id="bgUrl" placeholder="https://...">
+              <button class="btn-small" id="bgUrlApply">Apply</button>
+            </div>
+          </div>
+          <div class="slider-group">
+            <label class="input-label">Opacity <span id="bgOpacityVal">35%</span></label>
+            <input type="range" id="bgOpacity" min="10" max="100" value="35">
+          </div>
+          <div class="slider-group">
+            <label class="input-label">Blur <span id="bgBlurVal">0px</span></label>
+            <input type="range" id="bgBlur" min="0" max="20" value="0">
+          </div>
+        </div>
+      </section>
+      <section class="card info">
+        <p>Tip: use a dark abstract or gradient image for best readability. Opacity and blur update live.</p>
+      </section>
+    </div>
+  </div>
+
+  <footer>
+    <span id="status"></span>
+    <div style="display:flex;gap:8px;align-items:center">
+      <a href="#" id="openOptions" style="color:#8b5cf6;font-weight:700;text-decoration:none">Full settings →</a>
+      <a href="https://sponsor.ajay.app" target="_blank">SponsorBlock</a>
+    </div>
+  </footer>
+<script src="popup.js"></script>
+</body>
+</html>
+

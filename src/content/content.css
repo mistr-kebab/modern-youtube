@@ -1,0 +1,295 @@
+:root { --aura-accent: #f1f1f1; }
+/* Banner / overlay ads */
+#masthead-ad,
+#player-ads,
+#top-row ytd-display-ad-renderer,
+ytd-ad-slot-renderer,
+ytd-in-feed-ad-layout-renderer,
+ytd-banner-promo-renderer,
+.ad-showing .ytp-ad-overlay-container,
+.ytp-ad-image-overlay,
+.ytp-ad-overlay-slot {
+  display: none !important;
+}
+
+/* Feed: hide entire container so grid reflows without gaps */
+ytd-rich-item-renderer:has(ytd-ad-slot-renderer),
+ytd-rich-item-renderer:has(ytd-in-feed-ad-layout-renderer),
+ytd-rich-item-renderer:has(ytd-display-ad-renderer),
+ytd-rich-item-renderer:has(#in-feed-display-ad-renderer),
+ytd-rich-item-renderer:has(ytd-promoted-sparkles-web-renderer),
+ytd-rich-item-renderer:has([class*="ad-badge"]),
+ytd-rich-section-renderer:has(ytd-ad-slot-renderer),
+ytd-rich-section-renderer:has(ytd-in-feed-ad-layout-renderer),
+ytd-rich-section-renderer:has(ytd-promoted-sparkles-web-renderer),
+ytd-reel-shelf-renderer:has(ytd-ad-slot-renderer),
+ytd-statement-banner-renderer,
+ytd-in-feed-ad-layout-renderer,
+ytd-promoted-sparkles-web-renderer,
+ytd-rich-item-renderer[is-ad],
+ytd-rich-item-renderer[is-in-feed-ad] {
+  display: none !important;
+}
+
+/* Shorts shelf - hidden when hideShorts enabled (also handled via JS removal) */
+html.yt-hide-shorts ytd-reel-shelf-renderer,
+html.yt-hide-shorts ytd-rich-shelf-renderer:has(ytd-reel-item-renderer) {
+  display: none !important;
+}
+
+/* Fallback class applied via JS when :has() doesn't match or for text-based shelves like Playables */
+.yt-skipper-hidden {
+  display: none !important;
+}
+
+/* Anti adblock wall - YouTube enforcement popup */
+ytd-enforcement-message-view-model,
+#player-with-enforcement-message,
+tp-yt-paper-dialog:has(ytd-enforcement-message-view-model),
+ytd-popup-container:has(ytd-enforcement-message-view-model) {
+  display: none !important;
+}
+/* Ensure player is interactive again when wall was shown */
+html.yt-skipper-unblocked ytd-app { pointer-events: auto !important; }
+html.yt-skipper-unblocked #player { visibility: visible !important; }
+
+/* Hide default YouTube volume bezel when custom UI is active */
+html.yt-custom-volume .ytp-bezel { display: none !important; }
+
+/* Modern YouTube custom background - only on feed, never over player */
+#yt-aura-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+  pointer-events: none;
+  transition: opacity 0.35s ease, filter 0.35s ease;
+}
+#yt-aura-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(180deg, rgba(10,10,15,0.25) 0%, rgba(10,10,15,0.45) 100%);
+  pointer-events: none;
+}
+#yt-aura-bg-video {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  pointer-events: none;
+}
+/* Never cover the player */
+html.yt-aura-bg #player, html.yt-aura-bg #movie_player, html.yt-aura-bg .html5-video-container, html.yt-aura-bg video {
+  filter: none !important;
+  opacity: 1 !important;
+}
+html.yt-aura-bg body,
+html.yt-aura-bg ytd-app,
+html.yt-aura-bg #page-manager,
+html.yt-aura-bg #content,
+html.yt-aura-bg ytd-browse[page-subtype="home"],
+html.yt-aura-bg #guide-content,
+html.yt-aura-bg #page-manager ytd-browse {
+  background: transparent !important;
+  position: relative;
+  z-index: 2;
+}
+html.yt-aura-bg ytd-masthead,
+html.yt-aura-bg #masthead,
+html.yt-aura-bg ytd-masthead #container,
+html.yt-aura-bg #container.ytd-masthead {
+  background: rgba(15,15,15,0.55) !important;
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+html.yt-aura-bg #masthead #background {
+  background: transparent !important;
+}
+
+/* Modern Player - rounded, Netflix-like controls (ambient disabled by default - was blurring) */
+html.yt-modern-player #player, html.yt-modern-player #movie_player, html.yt-modern-player .html5-video-container {
+  border-radius: 14px !important;
+  overflow: hidden !important;
+}
+html.yt-modern-player .html5-video-player { border-radius: 14px !important; }
+html.yt-modern-player #player { position: relative; }
+#yt-ambient { display: none !important; }
+html.yt-modern-player .ytp-chrome-bottom { backdrop-filter: none; background: linear-gradient(transparent, rgba(0,0,0,0.55)) !important; padding: 6px 8px !important; }
+html.yt-modern-player .ytp-progress-bar-container { height: 6px !important; }
+html.yt-modern-player .ytp-swatch-background-color { background: #fff !important; }
+.yt-modern-btn { background: transparent; border: none; color: #fff; width: 36px; height: 36px; display: grid; place-items: center; border-radius: 8px; cursor: pointer; opacity: 0.9; transition: background 0.15s, opacity 0.15s; }
+.yt-modern-btn:hover { background: rgba(255,255,255,0.12); opacity: 1; }
+.yt-modern-btn.active { color: #ff0033; }
+
+/* Minimal Header - slim, centered search, full width */
+html.yt-minimal-header ytd-masthead #center { max-width: 640px; margin: 0 auto; }
+html.yt-minimal-header ytd-masthead #container { height: 48px !important; }
+html.yt-minimal-header #guide-button, html.yt-minimal-header ytd-masthead #buttons { opacity: 0.9; }
+
+/* Focus Mode - hide clutter */
+html.yt-focus-hide-mixes #contents ytd-rich-section-renderer:has(#title-text), html.yt-focus-hide-mixes ytd-rich-item-renderer:has(a[href*="&list="]) { display: none !important; }
+html.yt-focus-hide-recommended #related { display: none !important; }
+html.yt-focus-hide-comments ytd-comments#comments { display: none !important; }
+html.yt-focus-hide-comments #comments { display: none !important; }
+
+/* Command Palette */
+#yt-cmdk { position: fixed; inset: 0; z-index: 9999; display: none; place-items: start center; padding-top: 18vh; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); }
+#yt-cmdk.open { display: grid; }
+#yt-cmdk-box { width: min(560px, 90vw); background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 12px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+#yt-cmdk-input { width: 100%; background: transparent; border: none; border-bottom: 1px solid #2a2a2a; color: #f1f1f1; padding: 14px 16px; font: 14px/1 Roboto, sans-serif; outline: none; }
+#yt-cmdk-list { max-height: 320px; overflow-y: auto; }
+.yt-cmdk-item { padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border-bottom: 1px solid #1f1f1f; }
+.yt-cmdk-item:hover, .yt-cmdk-item.selected { background: #222; }
+.yt-cmdk-item span { color: #f1f1f1; font-size: 13px; }
+.yt-cmdk-item small { color: #8a8a8a; font-size: 11px; }
+
+/* Resume button - Watch where you left off */
+#yt-resume-btn {
+  position: absolute;
+  bottom: 64px;
+  left: 16px;
+  z-index: 30;
+  display: none;
+  align-items: center;
+  gap: 8px;
+  background: #f1f1f1;
+  color: #0f0f0f;
+  border: none;
+  border-radius: 999px;
+  padding: 9px 14px;
+  font: 600 13px/1 Roboto, Arial, sans-serif;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.35);
+  transition: transform 0.15s, background 0.15s;
+}
+#yt-resume-btn:hover { background: #fff; transform: translateY(-1px); }
+#yt-resume-btn i { font-size: 12px; }
+
+/* Skip notice - top bounce */
+#yt-skipper-notice {
+  position: fixed;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-80px);
+  background: #0f0f0f;
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font: 600 13px/1 Roboto, Arial, sans-serif;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  border: 1px solid #303030;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+  will-change: transform, opacity;
+}
+#yt-skipper-notice.show {
+  animation: ytSkipBounceIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+#yt-skipper-notice.hide {
+  animation: ytSkipBounceOut 0.45s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+}
+@keyframes ytSkipBounceIn {
+  0% { opacity: 0; transform: translateX(-50%) translateY(-60px) scale(0.95); }
+  60% { opacity: 1; transform: translateX(-50%) translateY(8px) scale(1.02); }
+  80% { transform: translateX(-50%) translateY(-4px) scale(0.99); }
+  100% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+}
+@keyframes ytSkipBounceOut {
+  0% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-30px) scale(0.96); }
+}
+
+/* SponsorBlock segments on progress bar */
+#yt-aura-segments {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 15;
+}
+.ytp-progress-bar, .ytp-play-progress, .ytp-load-progress { z-index: 1 !important; }
+.ytp-scrubber-container { z-index: 20 !important; }
+.yt-aura-segment {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  height: 100%;
+  opacity: 0.95;
+  border-radius: 2px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.4);
+}
+.yt-aura-segment.sponsor { background: #ff0033 !important; border-radius: 999px !important; }
+.yt-aura-segment.intro { background: #00d8ff !important; border-radius: 999px !important; }
+.yt-aura-segment.outro { background: #002aff !important; border-radius: 999px !important; }
+.yt-aura-segment.interaction { background: #cc00ff !important; border-radius: 999px !important; }
+.yt-aura-segment.selfpromo { background: #ffcc00 !important; border-radius: 999px !important; }
+.yt-aura-segment.music_offtopic { background: #ff6a00 !important; border-radius: 999px !important; }
+.ytp-progress-bar-container { position: relative; border-radius: 999px !important; overflow: visible !important; height: 6px !important; background: rgba(255,255,255,0.25) !important; }
+.ytp-progress-bar { border-radius: 999px !important; }
+.ytp-play-progress { background: #fff !important; border-radius: 999px !important; }
+.ytp-load-progress { background: rgba(255,255,255,0.35) !important; border-radius: 999px !important; }
+.ytp-scrubber-button { background: #9a9a9a !important; border-radius: 50% !important; width: 14px !important; height: 14px !important; left: -7px !important; top: -5px !important; transform: none !important; margin: 0 !important; opacity: 1 !important; box-shadow: 0 1px 4px rgba(0,0,0,0.4) !important; }
+.ytp-scrubber-container { opacity: 1 !important; }
+
+html.perf-no-anim #yt-skipper-notice,
+html.perf-no-anim .modal,
+html.perf-no-anim .modal-card,
+html.perf-no-anim #yt-custom-volume,
+html.perf-no-anim #yt-resume-btn { animation: none !important; transition: opacity 0.15s !important; }
+/* Custom volume overlay - modern glass style */
+#yt-custom-volume {
+  position: fixed;
+  bottom: 88px;
+  left: 50%;
+  transform: translateX(-50%) translateY(8px) scale(0.96);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(24,24,24,0.92);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 999px;
+  padding: 10px 20px;
+  z-index: 9998;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.45);
+}
+#yt-custom-volume.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1);
+}
+#yt-custom-volume .yt-vol-icon { width: 20px; height: 20px; flex-shrink: 0; color: #fff; }
+#yt-custom-volume .yt-vol-track {
+  width: 132px;
+  height: 4px;
+  background: rgba(255,255,255,0.18);
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+}
+#yt-custom-volume .yt-vol-fill {
+  height: 100%;
+  background: #fff;
+  border-radius: 999px;
+  transition: width 0.12s ease, background 0.12s ease;
+}
+#yt-custom-volume.muted .yt-vol-fill { background: #ff3b30; }
+#yt-custom-volume .yt-vol-value {
+  font: 600 12px/1 Roboto, Arial, sans-serif;
+  color: #fff;
+  min-width: 32px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}

@@ -1,0 +1,55 @@
+{
+  "manifest_version": 3,
+  "name": "Modern YouTube",
+  "version": "1.0.0",
+  "description": "Modern YouTube - clean ads, skip sponsors, custom backgrounds & modern UI.",
+  "permissions": ["storage", "declarativeNetRequest", "declarativeNetRequestWithHostAccess"],
+  "host_permissions": [
+    "https://*.youtube.com/*",
+    "https://*.googlevideo.com/*",
+    "https://*.doubleclick.net/*",
+    "https://*.googlesyndication.com/*",
+    "https://sponsor.ajay.app/*"
+  ],
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "ads",
+        "enabled": true,
+        "path": "src/rules/rules.json"
+      }
+    ]
+  },
+  "options_ui": {
+    "page": "src/options/options.html",
+    "open_in_tab": true
+  },
+  "action": {
+    "default_popup": "src/popup/popup.html",
+    "default_title": "Modern YouTube",
+    "default_icon": {
+      "16": "assets/img/icon.png",
+      "48": "assets/img/icon.png",
+      "128": "assets/img/icon.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.youtube.com/*"],
+      "js": ["src/content/injected.js"],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": ["*://*.youtube.com/*"],
+      "js": ["src/content/content.js"],
+      "css": ["src/content/content.css"],
+      "run_at": "document_start"
+    }
+  ],
+  "icons": {
+    "16": "assets/img/icon.png",
+    "48": "assets/img/icon.png",
+    "128": "assets/img/icon.png"
+  }
+}

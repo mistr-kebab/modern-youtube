@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": { "urlFilter": "doubleclick.net", "resourceTypes": ["script", "xmlhttprequest", "image", "media", "other"] }
+  },
+  {
+    "id": 2,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": { "urlFilter": "googlesyndication.com", "resourceTypes": ["script", "xmlhttprequest", "image", "media", "other"] }
+  },
+  {
+    "id": 3,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": { "urlFilter": "googleadservices.com", "resourceTypes": ["script", "xmlhttprequest", "image", "other"] }
+  },
+  {
+    "id": 4,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": { "urlFilter": "/api/stats/ads", "resourceTypes": ["xmlhttprequest", "ping", "other"] }
+  },
+  {
+    "id": 5,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": { "urlFilter": "/pagead/", "resourceTypes": ["script", "xmlhttprequest", "image", "media", "other"] }
+  },
+  {
+    "id": 6,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": { "urlFilter": "/ptracking", "resourceTypes": ["xmlhttprequest", "ping", "other"] }
+  },
+  {
+    "id": 7,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": { "urlFilter": "get_midroll_", "resourceTypes": ["xmlhttprequest", "other"] }
+  }
+]

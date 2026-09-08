@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modern YouTube — Settings</title>
+<link rel="icon" type="image/png" href="../../assets/img/icon.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="bg-orb orb1"></div>
+  <div class="bg-orb orb2"></div>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon"><img src="../../assets/img/icon.png" alt="Modern YouTube logo"></div>
+        <div>
+          <div class="brand-name">Modern YouTube</div>
+          <div class="brand-sub">v1.0.0 · Aura Engine</div>
+        </div>
+      </div>
+      <nav class="nav">
+        <button class="nav-item active" data-view="dashboard"><i class="fa-solid fa-chart-simple"></i> Dashboard</button>
+        <button class="nav-item" data-view="blocking"><i class="fa-solid fa-shield-halved"></i> Blocking</button>
+        <button class="nav-item" data-view="performance"><i class="fa-solid fa-gauge-high"></i> Performance</button>
+        <button class="nav-item" data-view="appearance"><i class="fa-solid fa-palette"></i> Appearance</button>
+        <button class="nav-item" data-view="about"><i class="fa-solid fa-circle-info"></i> About</button>
+      </nav>
+      <div class="sidebar-foot">
+        <a href="https://www.youtube.com" target="_blank" class="link-btn">Open YouTube →</a>
+        <div class="hint">Changes apply instantly</div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <!-- DASHBOARD -->
+      <section id="view-dashboard" class="view active">
+        <div class="page-head">
+          <h2>Dashboard</h2>
+          <p>Your Modern YouTube stats — time saved and clutter removed.</p>
+        </div>
+        <div class="stats-hero">
+          <div class="hero-card"><span class="hero-val" id="statAds">0</span><span class="hero-label">Ads blocked</span><span class="hero-sub" id="statAdsDetail2">Pre-roll</span></div>
+          <div class="hero-card"><span class="hero-val" id="statSponsors">0</span><span class="hero-label">Segments skipped</span><span class="hero-sub" id="statSponsorsDetail2">SponsorBlock</span></div>
+          <div class="hero-card accent"><span class="hero-val" id="statTime">0s</span><span class="hero-label">Time saved</span><span class="hero-sub">Keep watching</span></div>
+        </div>
+        <div id="currentlyWatchingDash" class="currently-card" style="display:none"></div>
+        <div class="card">
+          <div class="card-head"><h3>Detail</h3><button id="resetStats" class="btn-ghost">Reset stats</button></div>
+          <div class="detail-grid">
+            <div class="detail"><span>Ads blocked</span><strong id="statAdsDetail">0</strong></div>
+            <div class="detail"><span>Sponsor skips</span><strong id="statSponsorsDetail">0</strong></div>
+            <div class="detail"><span>Time saved</span><strong id="statTimeDetail">0s</strong></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3><i class="fa-solid fa-clock"></i> Watch Time</h3></div>
+          <div class="detail-grid">
+            <div class="detail"><span>Today</span><strong id="watchToday">0m</strong></div>
+            <div class="detail"><span>This week</span><strong id="watchWeek">0m</strong></div>
+            <div class="detail"><span>This month</span><strong id="watchMonth">0m</strong></div>
+          </div>
+          <div class="hint" style="margin-top:8px">Counts only when video is actually playing.</div>
+        </div>
+        <div class="card info">
+          <p>Stats are stored locally. SponsorBlock data from <code>sponsor.ajay.app</code>. Ad blocking via <code>injected.js</code> + <code>declarativeNetRequest</code>.</p>
+        </div>
+      </section>
+
+      <!-- BLOCKING -->
+      <section id="view-blocking" class="view">
+        <div class="page-head"><h2>Blocking & Tweaks</h2><p>What Aura should hide or skip.</p></div>
+        <div class="card">
+          <label class="row"><div><span class="label">Block ads before playback</span><span class="desc">Strips adPlacements + blocks ad domains</span></div><input type="checkbox" id="autoSkipAd"></label>
+          <label class="row"><div><span class="label">Hide Shorts shelf</span><span class="desc">Removes Shorts carousel & sidebar entry</span></div><input type="checkbox" id="hideShorts"></label>
+          <label class="row"><div><span class="label">Hide Playables</span><span class="desc">Removes YouTube Playables row</span></div><input type="checkbox" id="hidePlayables"></label>
+          <label class="row"><div><span class="label">Show skip toast</span><span class="desc">Popup when a segment is skipped</span></div><input type="checkbox" id="skipNotice"></label>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>SponsorBlock</h3>
+            <label class="row" style="border:none;padding:0"><span class="label" style="font-size:13px">Enabled</span><input type="checkbox" id="sponsorBlockEnabled"></label>
+          </div>
+          <div id="categories" class="cats">
+            <label class="row sub"><span>Sponsor</span><input type="checkbox" data-cat="sponsor"></label>
+            <label class="row sub"><span>Intro</span><input type="checkbox" data-cat="intro"></label>
+            <label class="row sub"><span>Outro</span><input type="checkbox" data-cat="outro"></label>
+            <label class="row sub"><span>Interaction (like/sub)</span><input type="checkbox" data-cat="interaction"></label>
+            <label class="row sub"><span>Self-promo</span><input type="checkbox" data-cat="selfpromo"></label>
+            <label class="row sub"><span>Music (off-topic)</span><input type="checkbox" data-cat="music_offtopic"></label>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Legend — Timeline Colors</h3></div>
+          <div style="display:grid; gap:8px; font-size:12px; line-height:1.4;">
+            <div style="display:flex; align-items:center; gap:10px;"><span style="width:16px; height:8px; border-radius:2px; background:#ff0033; display:inline-block; flex-shrink:0;"></span><span><strong>Sponsor</strong> — placements / advertising <span style="color:var(--muted)">#ff0033 red</span></span></div>
+            <div style="display:flex; align-items:center; gap:10px;"><span style="width:16px; height:8px; border-radius:2px; background:#00d8ff; display:inline-block; flex-shrink:0;"></span><span><strong>Intro</strong> — intro sequence <span style="color:var(--muted)">#00d8ff cyan</span></span></div>
+            <div style="display:flex; align-items:center; gap:10px;"><span style="width:16px; height:8px; border-radius:2px; background:#002aff; display:inline-block; flex-shrink:0;"></span><span><strong>Outro</strong> — credits / end screen <span style="color:var(--muted)">#002aff blue</span></span></div>
+            <div style="display:flex; align-items:center; gap:10px;"><span style="width:16px; height:8px; border-radius:2px; background:#cc00ff; display:inline-block; flex-shrink:0;"></span><span><strong>Interaction</strong> — like/subscribe reminder <span style="color:var(--muted)">#cc00ff purple</span></span></div>
+            <div style="display:flex; align-items:center; gap:10px;"><span style="width:16px; height:8px; border-radius:2px; background:#ffcc00; display:inline-block; flex-shrink:0;"></span><span><strong>Self-promo</strong> — self promotion / eigenwerbung <span style="color:var(--muted)">#ffcc00 yellow</span></span></div>
+            <div style="display:flex; align-items:center; gap:10px;"><span style="width:16px; height:8px; border-radius:2px; background:#ff6a00; display:inline-block; flex-shrink:0;"></span><span><strong>Music Offtopic</strong> — non-music section <span style="color:var(--muted)">#ff6a00 orange</span></span></div>
+          </div>
+          <div class="hint" style="text-align:left; margin-top:10px;">Colors appear on the YouTube progress bar from start to end. Hover a segment for time.</div>
+        </div>
+      </section>
+
+      <!-- PERFORMANCE -->
+      <section id="view-performance" class="view">
+        <div class="page-head"><h2>Performance</h2><p>Tune for speed — less work, less lag.</p></div>
+        <div class="card">
+          <label class="row"><div><span class="label">Aggressive feed cleaning</span><span class="desc">Checks empty slots with getBoundingClientRect — disabled = light, only ad-slot (recommended)</span></div><input type="checkbox" id="perfAggressiveFeedCleaning"></label>
+          <label class="row"><div><span class="label">SponsorBlock network</span><span class="desc">1 fetch per video to sponsor.ajay.app — disabling saves network (info)</span></div><input type="checkbox" id="perfSponsorBlock"></label>
+          <label class="row"><div><span class="label">Background FX</span><span class="desc">Disable blur + video background — saves GPU</span></div><input type="checkbox" id="perfDisableBackgroundFx"></label>
+          <label class="row"><div><span class="label">Animations</span><span class="desc">Disable bounce for skip toast & modals</span></div><input type="checkbox" id="perfDisableAnimations"></label>
+          <label class="row"><div><span class="label">Throttle history tracking</span><span class="desc">Flush 4s → 8s, meta cache 3.5s → 7s, saves storage writes</span></div><input type="checkbox" id="perfReduceHistoryFrequency"></label>
+        </div>
+        <div class="card info"><p>Light mode recommended for weaker PCs. SponsorBlock info: One request per new video, 404 = no segment.</p></div>
+      </section>
+
+      <!-- APPEARANCE -->
+      <section id="view-appearance" class="view">
+        <div class="page-head"><h2>Appearance</h2><p>Make YouTube yours — custom background for the whole site.</p></div>
+        <div class="card">
+          <label class="row"><div><span class="label">Custom background</span><span class="desc">Covers entire YouTube with your image</span></div><input type="checkbox" id="customBackgroundEnabled"></label>
+          <label class="row"><div><span class="label">Modern volume overlay</span><span class="desc">Replaces YouTube bezel on Arrow Up/Down</span></div><input type="checkbox" id="customVolumeUI"></label>
+          <div id="bgControls" class="bg-controls">
+            <div class="bg-layout">
+              <div class="bg-preview" id="bgPreview"><span>No image — upload or paste URL</span></div>
+              <div class="bg-side">
+                <label class="btn-primary file-btn">Upload image<input type="file" id="bgFile" accept="image/*" hidden></label>
+                <button class="btn-ghost" id="bgClear">Remove image</button>
+                <div class="hint">JPG, PNG, WebP — stored locally</div>
+              </div>
+            </div>
+            <div class="input-group">
+              <label class="input-label">Image URL</label>
+              <div class="input-row"><input type="text" id="bgUrl" placeholder="https://example.com/your-image.jpg"><button class="btn-small" id="bgUrlApply">Apply</button></div>
+            </div>
+            <div class="sliders">
+              <div class="slider-group"><label class="input-label">Opacity <span id="bgOpacityVal">35%</span></label><input type="range" id="bgOpacity" min="10" max="100" value="35"></div>
+              <div class="slider-group"><label class="input-label">Blur <span id="bgBlurVal">0px</span></label><input type="range" id="bgBlur" min="0" max="20" value="0"></div>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:14px">
+              <div><label class="input-label">Fit</label><select id="bgFit" style="width:100%; background:#0f0f0f; border:1px solid #2a2a2a; color:#f1f1f1; border-radius:8px; padding:8px;"><option value="cover">Cover</option><option value="contain">Contain</option><option value="tiled">Tiled</option></select></div>
+              <div><label class="input-label">Position</label><select id="bgPosition" style="width:100%; background:#0f0f0f; border:1px solid #2a2a2a; color:#f1f1f1; border-radius:8px; padding:8px;"><option value="center">Center</option><option value="top">Top</option></select></div>
+            </div>
+            <div class="input-group">
+              <label class="input-label">Presets</label>
+              <div id="presetGallery" style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px;">
+                <button class="preset" data-preset="linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 50%, #16213e 100%)" style="height:48px; border-radius:8px; border:1px solid #2a2a2a; background:linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 50%, #16213e 100%); cursor:pointer;" title="Midnight"></button>
+                <button class="preset" data-preset="linear-gradient(135deg, #1a0a2e 0%, #2d1b4e 50%, #0f3460 100%)" style="height:48px; border-radius:8px; border:1px solid #2a2a2a; background:linear-gradient(135deg, #1a0a2e 0%, #2d1b4e 50%, #0f3460 100%); cursor:pointer;" title="Aurora"></button>
+                <button class="preset" data-preset="linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)" style="height:48px; border-radius:8px; border:1px solid #2a2a2a; background:linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%); cursor:pointer;" title="Nebula"></button>
+                <button class="preset" data-preset="linear-gradient(135deg, #000000 0%, #434343 100%)" style="height:48px; border-radius:8px; border:1px solid #2a2a2a; background:linear-gradient(135deg, #000000 0%, #434343 100%); cursor:pointer;" title="Void"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Video background</h3></div>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <label class="btn-primary file-btn" style="flex:1;">Upload video<input type="file" id="bgVideoFile" accept="video/*" hidden></label>
+            <button class="btn-ghost" id="bgVideoClear">Remove video</button>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Video URL</label>
+            <div class="input-row"><input type="text" id="bgVideoUrl" placeholder="https://example.com/video.mp4"><button class="btn-small" id="bgVideoUrlApply">Apply</button></div>
+            <div class="hint" style="text-align:left; margin-top:6px;">MP4/WebM, loop muted. Overrides image if set.</div>
+          </div>
+          <div id="bgVideoPreview" style="margin-top:10px; display:none; max-height:160px; overflow:hidden; border-radius:8px; border:1px solid #2a2a2a;"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Player & Header</h3></div>
+          <label class="row"><div><span class="label">Modern player</span><span class="desc">Rounded player, Netflix-like controls</span></div><input type="checkbox" id="modernPlayer"></label>
+          <label class="row"><div><span class="label">Minimal header</span><span class="desc">Slim centered search</span></div><input type="checkbox" id="minimalHeader"></label>
+
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Focus mode</h3></div>
+          <label class="row"><div><span class="label">Hide mixes</span><span class="desc">Hide mixes row</span></div><input type="checkbox" id="focusHideMixes"></label>
+          <label class="row"><div><span class="label">Hide recommended</span><span class="desc">Hide related sidebar</span></div><input type="checkbox" id="focusHideRecommended"></label>
+          <label class="row"><div><span class="label">Hide comments</span><span class="desc">Hide comments</span></div><input type="checkbox" id="focusHideComments"></label>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Theme</h3></div>
+          <label class="row"><div><span class="label">Accent color</span><span class="desc">Primary accent for buttons</span></div><input type="color" id="accentColor" value="#f1f1f1" style="width:40px; height:28px; border:none; background:transparent; cursor:pointer;"></label>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Custom CSS</h3><label class="row" style="border:none; padding:0; gap:8px;"><span class="label" style="font-size:13px">Enabled</span><input type="checkbox" id="customCssEnabled"></label></div>
+          <textarea id="customCssText" placeholder="/* your css here */" style="width:100%; min-height:100px; background:#0f0f0f; border:1px solid #2a2a2a; color:#f1f1f1; border-radius:8px; padding:10px; font:12px monospace; resize:vertical;"></textarea>
+          <div class="hint" style="text-align:left;">Applies on YouTube. Use with care.</div>
+        </div>
+        <div class="card info"><p>Tip: dark abstract or gradient images work best. Masthead gets a frosted glass effect automatically.</p></div>
+      </section>
+
+      <!-- ABOUT -->
+      <section id="view-about" class="view">
+        <div class="page-head"><h2>About Modern YouTube</h2><p>All-in-one YouTube enhancer.</p></div>
+        <div class="card">
+          <h3 style="margin-bottom:8px">Modern YouTube v1.0.0</h3>
+          <p style="color:#9aa0b3;line-height:1.6">Blocks pre-roll ads before they play (player patch + DNR), skips SponsorBlock segments, hides Shorts/Playables/dead feed spots, bypasses the adblock wall, and adds a modern volume overlay + custom backgrounds.</p>
+          <ul style="margin:12px 0 0 18px;color:#c9cce0;line-height:1.8">
+            <li>Injected MAIN-world patch + declarativeNetRequest</li>
+            <li>SponsorBlock (sponsor.ajay.app)</li>
+            <li>Local stats & background (chrome.storage)</li>
+          </ul>
+          <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+            <a class="btn-primary" href="https://www.youtube.com" target="_blank">Open YouTube</a>
+            <a class="btn-ghost" href="https://sponsor.ajay.app" target="_blank">SponsorBlock</a>
+            <button id="resetAllSettings" class="btn-ghost" style="color:#ff6b6b; border-color:#ff6b6b;">Reset all to Standard</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <div id="toast" class="toast"></div>
+  <div id="videoModal" class="modal" aria-hidden="true">
+    <div class="modal-backdrop"></div>
+    <div class="modal-card" role="dialog" aria-modal="true">
+      <button class="modal-close" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+      <img id="modalThumb" class="modal-thumb" alt="">
+      <div class="modal-body">
+        <h2 id="modalTitle" class="modal-title"></h2>
+        <a id="modalChannel" class="modal-channel" target="_blank" rel="noopener"></a>
+        <div id="modalMeta" class="modal-meta"></div>
+        <div class="modal-actions">
+          <a id="modalWatch" class="btn-primary" target="_blank" rel="noopener"><i class="fa-solid fa-play"></i> Watch</a>
+          <a id="modalContinue" class="btn-ghost" target="_blank" rel="noopener" style="display:none">Continue watching</a>
+        </div>
+      </div>
+    </div>
+  </div>
+<script src="options.js"></script>
+</body>
+</html>
+
