@@ -305,7 +305,17 @@ html.perf-no-anim #yt-resume-btn { animation: none !important; transition: opaci
   height: 100%;
   background: #fff;
   border-radius: 999px;
-  transition: width 0.12s ease, background 0.12s ease;
+  transition: width 0.12s ease, margin-left 0.12s ease, background 0.12s ease;
+}
+#yt-custom-volume .yt-vol-boost {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  background: #cc0000;
+  border-radius: 999px;
+  transition: width 0.12s ease;
 }
 #yt-custom-volume.muted .yt-vol-fill { background: #ff3b30; }
 #yt-custom-volume .yt-vol-value {

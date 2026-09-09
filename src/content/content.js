@@ -1277,7 +1277,7 @@ function ensureVolumeOverlay() {
   el.id = "yt-custom-volume";
   el.innerHTML = `
     <svg class="yt-vol-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
-    <div class="yt-vol-track"><div class="yt-vol-fill"></div></div>
+    <div class="yt-vol-track"><div class="yt-vol-fill"></div><div class="yt-vol-boost"></div></div>
     <span class="yt-vol-value">100%</span>
   `;
   (document.body || document.documentElement).appendChild(el);
@@ -1298,7 +1298,14 @@ function showVolumeOverlay(volume, muted, boost) {
   const el = ensureVolumeOverlay();
   el.querySelector(".yt-vol-icon").outerHTML = getVolumeIcon(volume, muted);
   const pct = muted ? 0 : Math.round(volume * 100 * boost);
-  el.querySelector(".yt-vol-fill").style.width = Math.min(100, pct) + "%";
+  const fill = el.querySelector(".yt-vol-fill");
+  const over = muted ? 0 : Math.max(0, Math.min(200, pct) - 100);
+  const base = Math.min(100, pct) - over;
+  fill.style.width = base + "%";
+  fill.style.marginLeft = over + "%";
+  const boostEl = el.querySelector(".yt-vol-boost");
+  boostEl.style.left = "0";
+  boostEl.style.width = over + "%";
   el.querySelector(".yt-vol-value").textContent = pct + "%";
   el.classList.toggle("muted", muted || pct === 0);
   el.classList.add("visible");
@@ -1306,10 +1313,12 @@ function showVolumeOverlay(volume, muted, boost) {
   volumeHideTimer = setTimeout(() => el.classList.remove("visible"), 1400);
 }
 
-let boostCtx = null, boostGain = null, boostVideo = null, boostLevel = 1;
+let boostCtx = null, boostGain = null, boostComp = null, boostVideo = null, boostLevel = 1;
 function boostRelease() {
   try { if (boostGain) boostGain.disconnect(); } catch {}
+  try { if (boostComp) boostComp.disconnect(); } catch {}
   boostGain = null;
+  boostComp = null;
   boostVideo = null;
 }
 function boostGraph(video) {
@@ -1321,8 +1330,15 @@ function boostGraph(video) {
     const src = boostCtx.createMediaElementSource(video);
     boostGain = boostCtx.createGain();
     boostGain.gain.value = boostLevel;
+    boostComp = boostCtx.createDynamicsCompressor();
+    boostComp.threshold.value = -12;
+    boostComp.knee.value = 0;
+    boostComp.ratio.value = 20;
+    boostComp.attack.value = 0.003;
+    boostComp.release.value = 0.2;
     src.connect(boostGain);
-    boostGain.connect(boostCtx.destination);
+    boostGain.connect(boostComp);
+    boostComp.connect(boostCtx.destination);
     boostVideo = video;
     return true;
   } catch { boostRelease(); return false; }
@@ -1355,13 +1371,13 @@ function initCustomVolumeUI() {
     if (!settings.volumeBoost && boostLevel !== 1) { boostLevel = 1; boostApply(); }
     if (up && settings.volumeBoost && video.volume >= 0.999) {
       if (!boostGraph(video)) return;
-      boostLevel = Math.min(2, Math.round((boostLevel + 0.25) * 100) / 100);
+      boostLevel = Math.min(2, Math.round((boostLevel + 0.05) * 100) / 100);
       boostApply();
       showVolumeOverlay(video.volume, video.muted, boostLevel);
       return;
     }
     if (!up && settings.volumeBoost && boostLevel > 1) {
-      boostLevel = Math.max(1, Math.round((boostLevel - 0.25) * 100) / 100);
+      boostLevel = Math.max(1, Math.round((boostLevel - 0.05) * 100) / 100);
       boostApply();
       showVolumeOverlay(video.volume, video.muted, boostLevel);
       return;
