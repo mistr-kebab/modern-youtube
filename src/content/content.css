@@ -234,6 +234,26 @@ html.yt-focus-hide-comments #comments { display: none !important; }
 .yt-aura-segment.interaction { background: #cc00ff !important; border-radius: 999px !important; }
 .yt-aura-segment.selfpromo { background: #ffcc00 !important; border-radius: 999px !important; }
 .yt-aura-segment.music_offtopic { background: #ff6a00 !important; border-radius: 999px !important; }
+#yt-aura-seg-tip {
+  position: fixed;
+  z-index: 9999;
+  transform: translate(-50%, -100%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(10,10,10,0.92);
+  border: 1px solid #2a2a2a;
+  color: #f1f1f1;
+  font: 12px/1.4 Roboto, Arial, sans-serif;
+  padding: 5px 10px;
+  border-radius: 8px;
+  pointer-events: none;
+  white-space: nowrap;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+#yt-aura-seg-tip .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+#yt-aura-seg-tip strong { font-weight: 700; }
+#yt-aura-seg-tip .t { color: #9aa0b3; }
 .ytp-progress-bar-container { position: relative; border-radius: 999px !important; overflow: visible !important; height: 6px !important; background: rgba(255,255,255,0.25) !important; }
 .ytp-progress-bar { border-radius: 999px !important; }
 .ytp-play-progress { background: #fff !important; border-radius: 999px !important; }

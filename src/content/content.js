@@ -930,6 +930,44 @@ function showSkipNotice(category, duration) {
   }, 2500);
 }
 
+const SEG_TIP_LABELS = { sponsor: "Sponsor", intro: "Intro", outro: "Outro", interaction: "Interaction", selfpromo: "Self-promo", music_offtopic: "Music Offtopic" };
+const SEG_TIP_COLORS = { sponsor: "#ff0033", intro: "#00d8ff", outro: "#002aff", interaction: "#cc00ff", selfpromo: "#ffcc00", music_offtopic: "#ff6a00" };
+
+function ensureSegmentTooltip(container) {
+  if (!container || container._auraTipBound) return;
+  container._auraTipBound = true;
+  let tip = document.getElementById("yt-aura-seg-tip");
+  if (!tip) {
+    tip = document.createElement("div");
+    tip.id = "yt-aura-seg-tip";
+    tip.style.display = "none";
+    (document.body || document.documentElement).appendChild(tip);
+  }
+  const hide = () => { tip.style.display = "none"; };
+  container.addEventListener("mousemove", (e) => {
+    try {
+      const video = getVideo();
+      const dur = video && isFinite(video.duration) ? video.duration : 0;
+      if (!dur || !settings.sponsorBlockEnabled || !sponsorSegments.length) return hide();
+      const rect = container.getBoundingClientRect();
+      if (!rect.width) return hide();
+      const frac = (e.clientX - rect.left) / rect.width;
+      if (frac < 0 || frac > 1) return hide();
+      const t = frac * dur;
+      const seg = sponsorSegments.find((s) => settings.categories[s.category] && t >= s.start && t <= s.end);
+      if (!seg) return hide();
+      const cat = String(seg.category || "sponsor").replace(/[^a-z_]/g, "");
+      const label = SEG_TIP_LABELS[cat] || cat;
+      const color = SEG_TIP_COLORS[cat] || "#f1f1f1";
+      tip.innerHTML = `<span class="dot" style="background:${color}"></span><strong>${label}</strong><span class="t">${formatResumeTime(seg.start)} – ${formatResumeTime(seg.end)} (${Math.round(seg.end - seg.start)}s)</span>`;
+      tip.style.display = "flex";
+      tip.style.left = Math.min(window.innerWidth - 100, Math.max(100, e.clientX)) + "px";
+      tip.style.top = (rect.top - 12) + "px";
+    } catch { hide(); }
+  });
+  container.addEventListener("mouseleave", hide);
+}
+
 function renderSponsorSegmentsOverlay() {
   try {
     const container = document.querySelector(".ytp-progress-bar-container");
@@ -940,6 +978,7 @@ function renderSponsorSegmentsOverlay() {
       }
       return;
     }
+    ensureSegmentTooltip(container);
     let aura = document.getElementById("yt-aura-segments");
     if (!aura) {
       aura = document.createElement("div");
