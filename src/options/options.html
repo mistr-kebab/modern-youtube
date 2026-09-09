@@ -25,6 +25,7 @@
         <button class="nav-item active" data-view="dashboard"><i class="fa-solid fa-chart-simple"></i> Dashboard</button>
         <button class="nav-item" data-view="blocking"><i class="fa-solid fa-shield-halved"></i> Blocking</button>
         <button class="nav-item" data-view="performance"><i class="fa-solid fa-gauge-high"></i> Performance</button>
+        <button class="nav-item" data-view="playback"><i class="fa-solid fa-circle-play"></i> Playback</button>
         <button class="nav-item" data-view="appearance"><i class="fa-solid fa-palette"></i> Appearance</button>
         <button class="nav-item" data-view="about"><i class="fa-solid fa-circle-info"></i> About</button>
       </nav>
@@ -92,6 +93,12 @@
           </div>
         </div>
         <div class="card">
+          <div class="card-head"><h3>Channel whitelist</h3></div>
+          <p class="hint" style="text-align:left; margin:0 0 10px;">Whitelisted channels keep their ads — e.g. to support creators. SponsorBlock segments are still shown, but never auto-skipped. Tip: press Ctrl+K on a video page → "Whitelist This Channel".</p>
+          <div class="input-row"><input type="text" id="whitelistInput" placeholder="@handle, channel ID or name"><button class="btn-small" id="whitelistAdd">Add</button></div>
+          <div id="whitelistList" style="display:grid; gap:8px; margin-top:10px;"></div>
+        </div>
+        <div class="card">
           <div class="card-head"><h3>Legend — Timeline Colors</h3></div>
           <div style="display:grid; gap:8px; font-size:12px; line-height:1.4;">
             <div style="display:flex; align-items:center; gap:10px;"><span style="width:16px; height:8px; border-radius:2px; background:#ff0033; display:inline-block; flex-shrink:0;"></span><span><strong>Sponsor</strong> — placements / advertising <span style="color:var(--muted)">#ff0033 red</span></span></div>
@@ -118,12 +125,30 @@
         <div class="card info"><p>Light mode recommended for weaker PCs. SponsorBlock info: One request per new video, 404 = no segment.</p></div>
       </section>
 
+      <!-- PLAYBACK -->
+      <section id="view-playback" class="view">
+        <div class="page-head"><h2>Playback</h2><p>Quality, speed memory, timer and fine-tuning.</p></div>
+        <div class="card">
+          <div class="card-head"><h3>Video</h3></div>
+          <label class="row"><div><span class="label">Default quality</span><span class="desc">Applied to every video when available</span></div><select id="defaultQuality" style="background:#0f0f0f; border:1px solid #2a2a2a; color:#f1f1f1; border-radius:8px; padding:8px; max-width:170px;"><option value="auto">Auto (YouTube)</option><option value="hd2160">2160p 4K</option><option value="hd1440">1440p</option><option value="hd1080">1080p</option><option value="hd720">720p</option><option value="large">480p</option><option value="medium">360p</option><option value="small">240p</option><option value="tiny">144p</option></select></label>
+          <label class="row"><div><span class="label">Remember speed</span><span class="desc">Restore your last playback speed on new videos</span></div><input type="checkbox" id="rememberSpeed"></label>
+          <label class="row"><div><span class="label">Sleep timer</span><span class="desc">Pause playback after the set time</span></div><select id="sleepTimerMin" style="background:#0f0f0f; border:1px solid #2a2a2a; color:#f1f1f1; border-radius:8px; padding:8px; max-width:170px;"><option value="0">Off</option><option value="15">15 minutes</option><option value="30">30 minutes</option><option value="45">45 minutes</option><option value="60">60 minutes</option><option value="90">90 minutes</option><option value="120">120 minutes</option></select></label>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Sound & Seek</h3></div>
+          <label class="row"><div><span class="label">Volume boost over 100%</span><span class="desc">Arrow Up past max amplifies quiet videos up to 200%</span></div><input type="checkbox" id="volumeBoost"></label>
+          <label class="row"><div><span class="label">Arrow-key jump</span><span class="desc">Seconds per Left/Right press (1–60)</span></div><input type="number" id="seekArrowSec" min="1" max="60" step="1" style="background:#0f0f0f; border:1px solid #2a2a2a; color:#f1f1f1; border-radius:8px; padding:8px; width:90px;"></label>
+          <label class="row"><div><span class="label">J/L jump</span><span class="desc">Seconds per J/L press (1–60)</span></div><input type="number" id="seekJlSec" min="1" max="60" step="1" style="background:#0f0f0f; border:1px solid #2a2a2a; color:#f1f1f1; border-radius:8px; padding:8px; width:90px;"></label>
+        </div>
+      </section>
+
       <!-- APPEARANCE -->
       <section id="view-appearance" class="view">
         <div class="page-head"><h2>Appearance</h2><p>Make YouTube yours — custom background for the whole site.</p></div>
         <div class="card">
           <label class="row"><div><span class="label">Custom background</span><span class="desc">Covers entire YouTube with your image</span></div><input type="checkbox" id="customBackgroundEnabled"></label>
           <label class="row"><div><span class="label">Modern volume overlay</span><span class="desc">Replaces YouTube bezel on Arrow Up/Down</span></div><input type="checkbox" id="customVolumeUI"></label>
+          <label class="row"><div><span class="label">Modern seek overlay</span><span class="desc">Replaces YouTube bezel on Arrow Left/Right and J/L</span></div><input type="checkbox" id="customSeekUI"></label>
           <div id="bgControls" class="bg-controls">
             <div class="bg-layout">
               <div class="bg-preview" id="bgPreview"><span>No image — upload or paste URL</span></div>
@@ -207,6 +232,8 @@
           <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
             <a class="btn-primary" href="https://www.youtube.com" target="_blank">Open YouTube</a>
             <a class="btn-ghost" href="https://sponsor.ajay.app" target="_blank">SponsorBlock</a>
+            <button id="exportSettings" class="btn-ghost">Export settings</button>
+            <label class="btn-ghost" style="cursor:pointer;">Import settings<input type="file" id="importSettings" accept="application/json,.json" hidden></label>
             <button id="resetAllSettings" class="btn-ghost" style="color:#ff6b6b; border-color:#ff6b6b;">Reset all to Standard</button>
           </div>
         </div>

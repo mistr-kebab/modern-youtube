@@ -4,6 +4,8 @@ const DEFAULT_SETTINGS = {
   hideShorts: true,
   hidePlayables: true,
   customVolumeUI: true,
+  customSeekUI: true,
+  sleepTimerMin: 0,
   customBackgroundEnabled: false,
   customBackgroundOpacity: 35,
   customBackgroundBlur: 0,
@@ -18,6 +20,8 @@ const els = {
   hideShorts: document.getElementById("hideShorts"),
   hidePlayables: document.getElementById("hidePlayables"),
   customVolumeUI: document.getElementById("customVolumeUI"),
+  customSeekUI: document.getElementById("customSeekUI"),
+  sleepTimerMin: document.getElementById("sleepTimerMin"),
   skipNotice: document.getElementById("skipNotice"),
   sponsorBlockEnabled: document.getElementById("sponsorBlockEnabled"),
   categories: document.getElementById("categories"),
@@ -75,6 +79,8 @@ function loadSettings() {
     els.hideShorts.checked = s.hideShorts;
     els.hidePlayables.checked = s.hidePlayables;
     els.customVolumeUI.checked = s.customVolumeUI;
+    els.customSeekUI.checked = s.customSeekUI;
+    if (els.sleepTimerMin) els.sleepTimerMin.value = String(s.sleepTimerMin || 0);
     els.customBackgroundEnabled.checked = s.customBackgroundEnabled;
     els.bgOpacity.value = s.customBackgroundOpacity;
     els.bgBlur.value = s.customBackgroundBlur;
@@ -146,6 +152,8 @@ function save() {
     hideShorts: els.hideShorts.checked,
     hidePlayables: els.hidePlayables.checked,
     customVolumeUI: els.customVolumeUI.checked,
+    customSeekUI: els.customSeekUI.checked,
+    sleepTimerMin: els.sleepTimerMin ? parseInt(els.sleepTimerMin.value, 10) || 0 : 0,
     customBackgroundEnabled: els.customBackgroundEnabled.checked,
     customBackgroundOpacity: parseInt(els.bgOpacity.value,10),
     customBackgroundBlur: parseInt(els.bgBlur.value,10),
@@ -164,6 +172,8 @@ els.autoSkipAd.addEventListener("change", save);
 els.hideShorts.addEventListener("change", save);
 els.hidePlayables.addEventListener("change", save);
 els.customVolumeUI.addEventListener("change", save);
+els.customSeekUI.addEventListener("change", save);
+if (els.sleepTimerMin) els.sleepTimerMin.addEventListener("change", save);
 els.customBackgroundEnabled.addEventListener("change", save);
 els.skipNotice.addEventListener("change", save);
 els.sponsorBlockEnabled.addEventListener("change", () => { updateCategoryState(); save(); });

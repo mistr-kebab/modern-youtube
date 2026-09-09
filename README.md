@@ -15,8 +15,13 @@ Everything runs locally — no account, no telemetry, no background server.
   the timeline
 - **Declutter** — hide Shorts shelf, Playables row and dead feed slots
 - **Appearance** — custom background image or looping video across YouTube,
-  modern rounded player, minimal header, modern volume overlay, accent color,
+  modern rounded player, minimal header, modern volume and seek overlays
+  (seek toast left/right, configurable jump, volume boost to 200%),
   custom CSS
+- **Playback** - default quality, remembered playback speed, sleep timer
+- **Channel whitelist** - keep ads on chosen channels; segments are still
+  shown but never skipped (Ctrl+K → "Whitelist This Channel" on a video page)
+- **Settings backup** - export/import all settings as JSON (options → About)
 - **Focus mode** — hide mixes, recommended sidebar and comments
 - **Stats & history** — locally stored counters (ads blocked, segments skipped,
   time saved) plus watch-time tracking and a browsable watch history
@@ -33,7 +38,7 @@ Everything runs locally — no account, no telemetry, no background server.
 
 - Click the toolbar icon for quick stats and core toggles.
 - **Full settings** opens the options page (Dashboard, Blocking, Performance,
-  Appearance, About). Changes apply instantly.
+  Playback, Appearance, About). Changes apply instantly.
 - Performance toggles let you trade effects and tracking frequency for speed
   on weaker machines.
 

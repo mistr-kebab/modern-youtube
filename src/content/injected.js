@@ -7,6 +7,13 @@
   ]);
 
   let blockedNotified = new WeakSet();
+  let allowAds = false;
+  window.addEventListener("message", (e) => {
+    try {
+      const d = e && e.data;
+      if (d && d.type === "YT_AURA_WHITELIST") allowAds = !!d.allowAds;
+    } catch {}
+  });
   function notifyBlocked(count) {
     if (!count) return;
     const seconds = count * 15;
@@ -14,6 +21,7 @@
     try { window.dispatchEvent(new CustomEvent("yt-aura-ad-blocked", { detail: { count, seconds } })); } catch {}
   }
   function stripAds(obj, seen = new WeakSet()) {
+    if (allowAds) return;
     if (!obj || typeof obj !== "object" || seen.has(obj)) return;
     seen.add(obj);
     for (const key of Object.keys(obj)) {
@@ -60,6 +68,7 @@
   // Only block tracking pings, never the player itself - keeps video start fast
   const origFetch = window.fetch;
   window.fetch = function(input, init){
+    if (allowAds) return origFetch.apply(this, arguments);
     const url = typeof input==="string"?input:(input&&input.url)||"";
     if(url.includes("/api/stats/ads")||url.includes("doubleclick.net")||url.includes("/pagead/")||url.includes("/ptracking")){
       return Promise.resolve(new Response("",{status:204}));
@@ -75,6 +84,7 @@
     return origOpen.call(this, method, url, ...rest);
   };
   XMLHttpRequest.prototype.send = function(...args){
+    if (allowAds) return origSend.apply(this, args);
     if(this._ytBlocked){
       Object.defineProperty(this,"readyState",{value:4,writable:true});
       Object.defineProperty(this,"status",{value:204,writable:true});
@@ -91,7 +101,7 @@
   // Fallback only if ad element actually appears - very cheap observer
   let killPending=false;
   const killAdVideo = ()=>{
-    if(killPending) return;
+    if (allowAds || killPending) return;
     killPending=true;
     requestAnimationFrame(()=>{
       killPending=false;

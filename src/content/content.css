@@ -55,6 +55,7 @@ html.yt-skipper-unblocked #player { visibility: visible !important; }
 
 /* Hide default YouTube volume bezel when custom UI is active */
 html.yt-custom-volume .ytp-bezel { display: none !important; }
+html.yt-custom-seek .ytp-bezel { display: none !important; }
 
 /* Modern YouTube custom background - only on feed, never over player */
 #yt-aura-bg {
@@ -265,6 +266,7 @@ html.perf-no-anim #yt-skipper-notice,
 html.perf-no-anim .modal,
 html.perf-no-anim .modal-card,
 html.perf-no-anim #yt-custom-volume,
+html.perf-no-anim #yt-custom-seek,
 html.perf-no-anim #yt-resume-btn { animation: none !important; transition: opacity 0.15s !important; }
 /* Custom volume overlay - modern glass style */
 #yt-custom-volume {
@@ -311,5 +313,38 @@ html.perf-no-anim #yt-resume-btn { animation: none !important; transition: opaci
   color: #fff;
   min-width: 32px;
   text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+#yt-custom-seek {
+  position: fixed;
+  top: 50%;
+  left: 25%;
+  transform: translate(-50%, -50%) scale(0.92);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(24,24,24,0.92);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 999px;
+  padding: 12px 22px;
+  z-index: 9998;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.45);
+}
+#yt-custom-seek.visible {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+#yt-custom-seek.fwd { left: 75%; }
+#yt-custom-seek .yt-seek-icon { width: 22px; height: 22px; color: #fff; }
+#yt-custom-seek.rev .yt-seek-icon { transform: scaleX(-1); }
+#yt-custom-seek .yt-seek-value {
+  font: 700 16px/1 Roboto, Arial, sans-serif;
+  color: #fff;
+  min-width: 44px;
+  text-align: center;
   font-variant-numeric: tabular-nums;
 }

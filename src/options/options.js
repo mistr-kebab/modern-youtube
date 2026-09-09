@@ -4,6 +4,7 @@ const DEFAULT_SETTINGS = {
   hideShorts: true,
   hidePlayables: true,
   customVolumeUI: true,
+  customSeekUI: true,
   customBackgroundEnabled: false,
   customBackgroundOpacity: 35,
   customBackgroundBlur: 0,
@@ -21,7 +22,14 @@ const DEFAULT_SETTINGS = {
   perfDisableAnimations: false,
   perfReduceHistoryFrequency: false,
   categories: { sponsor: true, intro: true, outro: true, interaction: true, selfpromo: true, music_offtopic: false },
-  skipNotice: true
+  skipNotice: true,
+  volumeBoost: false,
+  seekArrowSec: 5,
+  seekJlSec: 10,
+  defaultQuality: "auto",
+  rememberSpeed: true,
+  sleepTimerMin: 0,
+  whitelist: []
 };
 
 const els = {
@@ -47,6 +55,18 @@ const els = {
   hideShorts: document.getElementById("hideShorts"),
   hidePlayables: document.getElementById("hidePlayables"),
   customVolumeUI: document.getElementById("customVolumeUI"),
+  customSeekUI: document.getElementById("customSeekUI"),
+  defaultQuality: document.getElementById("defaultQuality"),
+  rememberSpeed: document.getElementById("rememberSpeed"),
+  sleepTimerMin: document.getElementById("sleepTimerMin"),
+  volumeBoost: document.getElementById("volumeBoost"),
+  seekArrowSec: document.getElementById("seekArrowSec"),
+  seekJlSec: document.getElementById("seekJlSec"),
+  whitelistInput: document.getElementById("whitelistInput"),
+  whitelistAdd: document.getElementById("whitelistAdd"),
+  whitelistList: document.getElementById("whitelistList"),
+  exportSettings: document.getElementById("exportSettings"),
+  importSettings: document.getElementById("importSettings"),
   skipNotice: document.getElementById("skipNotice"),
   sponsorBlockEnabled: document.getElementById("sponsorBlockEnabled"),
   categories: document.getElementById("categories"),
@@ -182,6 +202,15 @@ function loadSettings() {
     els.hideShorts.checked = s.hideShorts;
     els.hidePlayables.checked = s.hidePlayables;
     els.customVolumeUI.checked = s.customVolumeUI;
+    els.customSeekUI.checked = s.customSeekUI;
+    if (els.defaultQuality) els.defaultQuality.value = s.defaultQuality || "auto";
+    if (els.rememberSpeed) els.rememberSpeed.checked = s.rememberSpeed !== false;
+    if (els.sleepTimerMin) els.sleepTimerMin.value = String(s.sleepTimerMin || 0);
+    if (els.volumeBoost) els.volumeBoost.checked = !!s.volumeBoost;
+    if (els.seekArrowSec) els.seekArrowSec.value = s.seekArrowSec || 5;
+    if (els.seekJlSec) els.seekJlSec.value = s.seekJlSec || 10;
+    whitelistCache = (Array.isArray(s.whitelist) ? s.whitelist : []).filter((e) => wlKey(e));
+    renderWhitelist();
     els.customBackgroundEnabled.checked = s.customBackgroundEnabled;
     els.bgOpacity.value = s.customBackgroundOpacity;
     els.bgBlur.value = s.customBackgroundBlur;
@@ -424,6 +453,30 @@ chrome.storage.onChanged.addListener((changes, area) => {
 });
 
 function updateCats() { els.categories.classList.toggle("disabled", !els.sponsorBlockEnabled.checked); }
+let whitelistCache = [];
+function wlKey(e) {
+  return String((e && typeof e === "object" ? e.key : e) || "").toLowerCase().trim();
+}
+function renderWhitelist() {
+  if (!els.whitelistList) return;
+  els.whitelistList.innerHTML = whitelistCache.length
+    ? whitelistCache.map((e, i) => {
+        const key = wlKey(e);
+        const name = (e && typeof e === "object" && e.name) ? e.name : key;
+        const avatar = (e && typeof e === "object" && e.avatar) ? e.avatar : "";
+        const face = avatar
+          ? `<img src="${escapeHtml(avatar)}" alt="">`
+          : `<span class="wl-letter">${escapeHtml((name || key || "?").charAt(0).toUpperCase())}</span>`;
+        return `<div class="wl-card"><span class="wl-avatar">${face}</span><span class="wl-name" title="${escapeHtml(key)}">${escapeHtml(name)}</span><button class="btn-ghost" data-wl="${i}">Remove</button></div>`;
+      }).join("")
+    : `<div class="hint" style="text-align:left;">No whitelisted channels yet.</div>`;
+  els.whitelistList.querySelectorAll("[data-wl]").forEach((btn) => btn.addEventListener("click", () => {
+    whitelistCache = whitelistCache.filter((_, i) => i !== parseInt(btn.dataset.wl, 10));
+    renderWhitelist();
+    save();
+  }));
+}
+
 function save() {
   const categories = {};
   for (const inp of document.querySelectorAll("[data-cat]")) categories[inp.dataset.cat] = inp.checked;
@@ -440,11 +493,20 @@ function save() {
   } else if (els.sponsorBlockEnabled) {
     sponsorVal = els.sponsorBlockEnabled.checked;
   }
+  const clampNum = (el, min, max, fb) => { const v = parseInt(el && el.value, 10); return Number.isFinite(v) ? Math.min(max, Math.max(min, v)) : fb; };
   const data = {
     autoSkipAd: els.autoSkipAd.checked,
     hideShorts: els.hideShorts.checked,
     hidePlayables: els.hidePlayables.checked,
     customVolumeUI: els.customVolumeUI.checked,
+    customSeekUI: els.customSeekUI ? els.customSeekUI.checked : true,
+    volumeBoost: els.volumeBoost ? els.volumeBoost.checked : false,
+    seekArrowSec: clampNum(els.seekArrowSec, 1, 60, 5),
+    seekJlSec: clampNum(els.seekJlSec, 1, 60, 10),
+    defaultQuality: els.defaultQuality ? els.defaultQuality.value : "auto",
+    rememberSpeed: els.rememberSpeed ? els.rememberSpeed.checked : true,
+    sleepTimerMin: els.sleepTimerMin ? parseInt(els.sleepTimerMin.value, 10) || 0 : 0,
+    whitelist: whitelistCache,
     customBackgroundEnabled: els.customBackgroundEnabled.checked,
     customBackgroundOpacity: parseInt(els.bgOpacity.value,10),
     customBackgroundBlur: parseInt(els.bgBlur.value,10),
@@ -473,7 +535,8 @@ function save() {
 }
 
 [
-  els.autoSkipAd, els.hideShorts, els.hidePlayables, els.customVolumeUI,
+  els.autoSkipAd, els.hideShorts, els.hidePlayables, els.customVolumeUI, els.customSeekUI,
+  els.defaultQuality, els.rememberSpeed, els.sleepTimerMin, els.volumeBoost, els.seekArrowSec, els.seekJlSec,
   els.customBackgroundEnabled, els.skipNotice, els.sponsorBlockEnabled,
   els.modernPlayer, els.minimalHeader, els.focusHideMixes, els.focusHideRecommended, els.focusHideComments, els.customCssEnabled
 ].forEach(el => el && el.addEventListener("change", save));
@@ -482,6 +545,40 @@ if (els.bgOpacity) els.bgOpacity.addEventListener("input", () => { els.bgOpacity
 if (els.bgBlur) els.bgBlur.addEventListener("input", () => { els.bgBlurVal.textContent = els.bgBlur.value + "px"; save(); });
 if (els.bgFit) els.bgFit.addEventListener("change", save);
 if (els.bgPosition) els.bgPosition.addEventListener("change", save);
+if (els.whitelistAdd) els.whitelistAdd.addEventListener("click", () => {
+  const v = (els.whitelistInput.value || "").trim().toLowerCase();
+  if (!v) return;
+  if (!whitelistCache.some((e) => wlKey(e) === v)) whitelistCache.push({ key: v });
+  els.whitelistInput.value = "";
+  renderWhitelist();
+  save();
+});
+if (els.whitelistInput) els.whitelistInput.addEventListener("keydown", (e) => { if (e.key === "Enter" && els.whitelistAdd) els.whitelistAdd.click(); });
+if (els.exportSettings) els.exportSettings.addEventListener("click", () => {
+  chrome.storage.sync.get(null, (data) => {
+    const blob = new Blob([JSON.stringify({ app: "modern-youtube", version: 1, exportedAt: new Date().toISOString(), settings: data || {} }, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "modern-youtube-settings.json";
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  });
+});
+if (els.importSettings) els.importSettings.addEventListener("change", () => {
+  const f = els.importSettings.files && els.importSettings.files[0];
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try {
+      const parsed = JSON.parse(r.result);
+      const data = parsed && parsed.settings ? parsed.settings : parsed;
+      if (!data || typeof data !== "object" || Array.isArray(data)) throw 0;
+      chrome.storage.sync.set(data, () => { toast("Imported ✓"); setTimeout(() => location.reload(), 700); });
+    } catch { toast("Invalid settings file"); }
+  };
+  r.readAsText(f);
+  els.importSettings.value = "";
+});
 if (els.accentColor) els.accentColor.addEventListener("input", save);
 if (els.accentColor) els.accentColor.addEventListener("change", save);
 if (els.customCssText) {
